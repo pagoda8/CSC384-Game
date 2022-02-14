@@ -1,33 +1,35 @@
-//List and definition of tetromino shapes
+//Describes tetrominos
 
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-//Names of shapes
+//Collection of tetrominos
 public enum Tetromino
 {
-    I,
-    O,
-    T,
-    J,
-    L,
-    S,
-    Z,
+	I,
+	O,
+	T,
+	J,
+	L,
+	S,
+	Z,
 }
 
-//Enable the editor to interpret shape data
+//Enable the editor to interpret tetromino data
 [System.Serializable]
 
-//Definition of shapes
+//Defines a tetromino
 public struct TetrominoData
 {
-    public Tetromino tetromino;
-    public Tile tile;
-    public Vector2Int[] cells { get; private set; }
+	public Tetromino tetromino;
+	//Tile to use
+	public Tile tile;
+	//Cells that form the tetromino in original rotation
+	public Vector2Int[] cells { get; private set; }
 
-    public void Initialise()
-    {
-        //Assign cell data
-        this.cells = Data.Cells[this.tetromino]
-    }
+	//Ititialise cell data for tetromino
+	public void Initialise()
+	{
+		this.cells = Data.Cells[this.tetromino];
+	}
 }
