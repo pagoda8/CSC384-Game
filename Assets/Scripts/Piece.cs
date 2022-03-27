@@ -77,11 +77,17 @@ public class Piece : MonoBehaviour {
 	//Rotates a piece given a direction
 	//(-1) => anti-clockwise, (1) => clockwise
 	private void Rotate(int direction) {
+		int oldRotationIndex = this.rotationIndex;
 		this.rotationIndex += direction;
-		//Prevents from index going over 3 (4 phases in total)
-		this.rotationIndex = this.rotationIndex % 4;
+		this.rotationIndex = Wrap(this.rotationIndex, 0, 4);
 
 		ApplyRotationMatrix(direction);
+
+		//If all wall kick tests fail revert rotation
+		if (!TestWallKicks(this.rotationIndex, direction)) {
+			this.rotationIndex = oldRotationIndex;
+			ApplyRotationMatrix(-direction);
+		}
 	}
 
 	//Applies rotation matrix to cells of piece
@@ -107,6 +113,49 @@ public class Piece : MonoBehaviour {
 					this.cells[i].y = Mathf.RoundToInt((cell.x * matrix[2] * direction) + (cell.y * matrix[3] * direction));
 					break;
 			}
+		}
+	}
+
+	//Performs wall kick tests on a piece
+	//First test is always without movement (i.e vector (0, 0))
+	//If it fails, other tests try different movements
+	//If all tests fail, returns false
+	private bool TestWallKicks(int rotationIndex, int direction) {
+		int wallKickIndex = GetWallKickIndex(rotationIndex, direction);
+
+		//Perform 5 wall kick tests
+		//Tests end as soon as a test passes
+		for (int i = 0; i < 5; i++) {
+			//Get data for a specific test
+			Vector2Int vector = this.data.wallKicks[wallKickIndex, i];
+
+			//Try to move with the vector
+			if (Move(vector)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	//Returns an index in the wall kick test data array depending on the current rotation index and rotation direction
+	private int GetWallKickIndex(int rotationIndex, int direction) {
+		//Get index for clockwise rotation (by default)
+		int wallKickIndex = rotationIndex * 2;
+
+		//If rotating anti-clockwise update index accordingly
+		if (direction < 0) {
+			wallKickIndex--;
+		}
+
+		return Wrap(wallKickIndex, 0, 8);
+	}
+
+	//Puts input into range [min, max]
+	private int Wrap(int input, int min, int max) {
+		if (input < min) {
+			return max - (min - input) % (max - min);
+		} else {
+			return min + (input - min) % (max - min);
 		}
 	}
 }

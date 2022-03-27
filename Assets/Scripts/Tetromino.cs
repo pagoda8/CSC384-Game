@@ -21,12 +21,16 @@ public enum Tetromino {
 public struct TetrominoData {
 	public Tetromino tetromino; //Identifier (name)
 	public Tile tile; //Tile to use
+
 	//Cells that form the tetromino in original rotation
 	public Vector2Int[] cells { get; private set; }
+	//Wall kick test data for the tetromino
+	public Vector2Int[,] wallKicks { get; private set; }
 
-	//Ititialise cell data for tetromino
+	//Ititialise cell and wall kick test data for tetromino
 	public void Initialise() {
 		this.cells = Data.Cells[this.tetromino];
+		this.wallKicks = Data.WallKicks[this.tetromino];
 	}
 }
 
