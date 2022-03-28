@@ -9,11 +9,17 @@ public class Piece : MonoBehaviour {
 	public Vector3Int[] cells { get; private set; } //Cells that form the piece during game
 	public int rotationIndex { get; private set; } //Defines the rotation phase
 
+	public float stepDelay = 1f; //Amount of time that has to pass for game to step (move piece down)
+	public float nextStepTime; //Time of next step
+
 	public void Initialise(Board board, Vector3Int position, TetrominoData data) {
 		this.board = board;
 		this.position = position;
 		this.data = data;
 		this.rotationIndex = 0;
+
+		//Set next step time (current time + delay)
+		this.nextStepTime = Time.time + this.stepDelay;
 
 		if (cells == null) {
 			this.cells = new Vector3Int[data.cells.Length];
@@ -48,7 +54,25 @@ public class Piece : MonoBehaviour {
 			HardDrop();
 		}
 
+		if (Time.time >= this.nextStepTime) {
+			Step();
+		}
+
 		this.board.Set(this);
+	}
+
+	//Moves the piece down by one place
+	private void Step() {
+		//Try to move down. If can't move, lock piece.
+		if (!Move(Vector2Int.down)) {
+			Lock();
+		}
+	}
+
+	//Places the piece on the board for the last time and spawns a new piece
+	private void Lock() {
+		this.board.Set(this);
+		this.board.SpawnPiece();
 	}
 
 	//Moves piece as down as possible
@@ -56,6 +80,7 @@ public class Piece : MonoBehaviour {
 		while (Move(Vector2Int.down)) {
 			continue;
 		}
+		Lock();
 	}
 
 	//Moves the position of the piece by a vector
@@ -69,6 +94,10 @@ public class Piece : MonoBehaviour {
 
 		if (allowedMove) {
 			this.position = newPosition;
+			//Update next step time if moving down
+			if (vector == Vector2Int.down) {
+				this.nextStepTime = Time.time + this.stepDelay;
+			}
 		}
 
 		return allowedMove;
@@ -83,7 +112,7 @@ public class Piece : MonoBehaviour {
 
 		ApplyRotationMatrix(direction);
 
-		//If all wall kick tests fail revert rotation
+		//If all wall kick tests fail, undo rotation
 		if (!TestWallKicks(this.rotationIndex, direction)) {
 			this.rotationIndex = oldRotationIndex;
 			ApplyRotationMatrix(-direction);
@@ -117,7 +146,7 @@ public class Piece : MonoBehaviour {
 	}
 
 	//Performs wall kick tests on a piece
-	//First test is always without movement (i.e vector (0, 0))
+	//First test is always without movement (i.e. vector (0, 0))
 	//If it fails, other tests try different movements
 	//If all tests fail, returns false
 	private bool TestWallKicks(int rotationIndex, int direction) {
@@ -126,7 +155,7 @@ public class Piece : MonoBehaviour {
 		//Perform 5 wall kick tests
 		//Tests end as soon as a test passes
 		for (int i = 0; i < 5; i++) {
-			//Get data for a specific test
+			//Get vector for a specific test
 			Vector2Int vector = this.data.wallKicks[wallKickIndex, i];
 
 			//Try to move with the vector
