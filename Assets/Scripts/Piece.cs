@@ -70,9 +70,13 @@ public class Piece : MonoBehaviour {
 	}
 
 	//Places the piece on the board for the last time and spawns a new piece
+	//Updates stepDelay
 	private void Lock() {
 		this.board.Set(this);
-		this.board.ClearLines();
+
+		int linesCleared = this.board.ClearLines();
+		this.stepDelay -= this.stepDelay * (float) 0.1 * linesCleared;
+
 		this.board.SpawnPiece();
 	}
 

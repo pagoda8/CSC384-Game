@@ -100,17 +100,22 @@ public class Board : MonoBehaviour {
 	}
 
 	//Clears all full lines on the board
-	public void ClearLines() {
+	//Returns number of lines cleared
+	public int ClearLines() {
 		RectInt bounds = this.Bounds;
 		int row = bounds.yMin;
+		int linesCleared = 0;
 
 		while (row < bounds.yMax) {
 			if (IsLineFull(row)) {
 				ClearLine(row);
+				linesCleared++;
 			} else {
 				row++;
 			}
 		}
+
+		return linesCleared;
 	}
 
 	//Checks if a line on the board is full and returns bool
