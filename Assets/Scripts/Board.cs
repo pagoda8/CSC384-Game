@@ -77,6 +77,7 @@ public class Board : MonoBehaviour {
 	//When game ends
 	private void GameOver() {
 		this.tilemap.ClearAllTiles();
+		ScoreManager.shared.Reset();
 
 		// ...
 	}

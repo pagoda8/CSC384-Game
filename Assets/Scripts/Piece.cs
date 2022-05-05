@@ -1,6 +1,7 @@
 //Implements an in game tetromino piece
 
 using UnityEngine;
+using System;
 
 public class Piece : MonoBehaviour {
 	public Board board { get; private set; } //Board used
@@ -75,6 +76,16 @@ public class Piece : MonoBehaviour {
 		this.board.Set(this);
 
 		int linesCleared = this.board.ClearLines();
+		ScoreManager.shared.AddLinesCleared(linesCleared);
+
+		//Update scores
+		float bonusPoints = 0;
+		if (linesCleared > 1) {
+			bonusPoints = ((linesCleared * linesCleared) / 2f) * 25f;
+		}
+		float pointsToAdd = (100f * linesCleared + bonusPoints) * (1f / stepDelay);
+		ScoreManager.shared.AddPoints((int) Math.Round(pointsToAdd, 0));
+
 		this.stepDelay -= this.stepDelay * (float) 0.1 * linesCleared;
 
 		this.board.SpawnPiece();
