@@ -25,9 +25,7 @@ public class Board : MonoBehaviour {
 	private void Awake() {
 		//Gets the Tilemap and Piece to be used
 		this.tilemap = GetComponentInChildren<Tilemap>();
-		GameObject g = GameObject.Find("Piece");
-		Debug.Log(g);
-		this.activePiece = g.GetComponentInChildren<Piece>(true);
+		this.activePiece = gameObject.AddComponent<Piece>();
 
 		//Initialise tetromino data
 		for (int i = 0; i < this.tetrominos.Length; i++) {
@@ -46,9 +44,8 @@ public class Board : MonoBehaviour {
 		int r = Random.Range(0, this.tetrominos.Length);
 		TetrominoData data = this.tetrominos[r];
 
+		this.activePiece.Initialise(this, this.spawnPosition, data);
 		if (IsValidPosition(this.activePiece, this.spawnPosition)) {
-			//Set active piece
-			this.activePiece.Initialise(this, this.spawnPosition, data);
 			Set(this.activePiece);
 		} else {
 			GameOver();
