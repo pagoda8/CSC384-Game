@@ -72,6 +72,7 @@ public class Piece : MonoBehaviour {
 	//Places the piece on the board for the last time and spawns a new piece
 	private void Lock() {
 		this.board.Set(this);
+		this.board.ClearLines();
 		this.board.SpawnPiece();
 	}
 
