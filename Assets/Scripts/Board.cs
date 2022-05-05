@@ -25,7 +25,7 @@ public class Board : MonoBehaviour {
 	private void Awake() {
 		//Gets the Tilemap and Piece to be used
 		this.tilemap = GetComponentInChildren<Tilemap>();
-		this.activePiece = gameObject.AddComponent<Piece>();
+		this.activePiece = GetComponentInChildren<Piece>();
 
 		//Initialise tetromino data
 		for (int i = 0; i < this.tetrominos.Length; i++) {
