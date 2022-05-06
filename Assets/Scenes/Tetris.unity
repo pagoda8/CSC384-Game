@@ -353,7 +353,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tile: {fileID: 11400000, guid: 2b221b5dd9f694541b06158c82d1589a, type: 2}
   board: {fileID: 77997254}
-  trackedPiece: {fileID: 77997255}
+  trackedPiece: {fileID: 0}
 --- !u!1 &324581895
 GameObject:
   m_ObjectHideFlags: 0

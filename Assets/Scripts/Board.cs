@@ -35,6 +35,7 @@ public class Board : MonoBehaviour {
 
 	//When game starts
 	private void Start() {
+		PlaytimeManager.shared.StartTimer();
 		SpawnPiece();
 	}
 
@@ -78,6 +79,7 @@ public class Board : MonoBehaviour {
 	private void GameOver() {
 		this.tilemap.ClearAllTiles();
 		ScoreManager.shared.Reset();
+		PlaytimeManager.shared.StopTimer();
 
 		// ...
 	}
@@ -161,7 +163,6 @@ public class Board : MonoBehaviour {
 		}
 	}
 }
-
 
 
 

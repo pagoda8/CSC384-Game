@@ -71,10 +71,11 @@ public class Piece : MonoBehaviour {
 	}
 
 	//Places the piece on the board for the last time and spawns a new piece
-	//Updates stepDelay
+	//Updates stepDelay and player stats
 	private void Lock() {
 		this.board.Set(this);
 
+		//Update lines cleared
 		int linesCleared = this.board.ClearLines();
 		ScoreManager.shared.AddLinesCleared(linesCleared);
 
@@ -86,6 +87,7 @@ public class Piece : MonoBehaviour {
 		float pointsToAdd = (100f * linesCleared + bonusPoints) * (1f / stepDelay);
 		ScoreManager.shared.AddPoints((int) Math.Round(pointsToAdd, 0));
 
+		//Increase speed
 		this.stepDelay -= this.stepDelay * (float) 0.1 * linesCleared;
 
 		this.board.SpawnPiece();
