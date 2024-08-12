@@ -1,4 +1,4 @@
-## Game's description
+## About
 
 Tetris game - a well known classic.
 
